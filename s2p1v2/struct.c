@@ -4,39 +4,43 @@
 
 Datatime *baseconst(){
     Datatime *p = malloc(sizeof(Datatime));
-    check_malloc(p);
+    malloc_info(p);
     printf("Введите день, месяц, год, час и минуты по порядку через пробелы: ");
     if (scanf("%hhu %hhu %hu %hhu %hhu", &p->day, &p->month, &p->year, &p->hour, &p->minute) != 5) {
         printf("Неверный ввод!\n");
         free(p);
-        abort();
+        exit(EXIT_FAILURE);
     }
-    if (p->day != 0 && p->day > 31) {
+
+    if (p->day == 0 || p->day > 31) {
         printf("Ошибка: некорректный день (1-31).\n");
         free(p);
-        abort();
+        exit(EXIT_FAILURE);
     }
-    if (p->month != 0 && p->month > 12) {
+
+    if (p->month == 0 || p->month > 12) {
         printf("Ошибка: некорректный месяц (1-12).\n");
         free(p);
-        abort();
+        exit(EXIT_FAILURE);
     }
+
     if (p->hour > 23) {
         printf("Ошибка: некорректный час (0-23).\n");
         free(p);
-        abort();
+        exit(EXIT_FAILURE);
     }
+    
     if (p->minute > 59) {
         printf("Ошибка: некорректные минуты (0-59).\n");
         free(p);
-        abort();
+        exit(EXIT_FAILURE);
     }
     return p;
 }
 
 Datatime *default_datatime(){
     Datatime *p = malloc(sizeof(Datatime));
-    check_malloc(p);
+    malloc_info(p);
     p->day = 1;
     p->month = 1;
     p->year = 2000;
@@ -47,7 +51,7 @@ Datatime *default_datatime(){
 
 Datatime *copy(Datatime *p){
     Datatime *copy = malloc(sizeof(Datatime));
-    check_malloc(copy);
+    malloc_info(copy);
     copy->day = p->day;
     copy->month = p->month;
     copy->year = p->year;
@@ -56,10 +60,10 @@ Datatime *copy(Datatime *p){
     return copy;
 }
 
-void check_malloc(void *ptr) {
+void malloc_info(void *ptr) {
     if (!ptr) { 
         printf("Ошибка: не удалось выделить память!\n");
-        abort();
+        exit(EXIT_FAILURE);
     }
 }
 
@@ -181,21 +185,27 @@ int greater_than(Datatime *dflt, Datatime *bcst) {
     return compare_datatime(dflt, bcst) > 0;
 }
 
-int compare_struct(Datatime *def_con, Datatime *obase){
+void compare_struct(Datatime *def_con, Datatime *obase){
     char comp_minute = obase->minute - def_con->minute;
     char comp_hour = obase->hour - def_con->hour;
     short comp_year = obase->year - def_con->year;
     char comp_day = obase->day - def_con->day;
     char comp_month = obase->month - def_con->month;
-    printf("Разница между датами: %d дней %d месяцев %d лет %d час %d минут\n", comp_day, comp_month, comp_year, comp_hour, comp_minute);
-    printf("Это: %d минут\n", comp_day*1440 + comp_month*44640 + comp_year*535680 + comp_hour*60 + comp_minute);
+    printf("\nРазница между датами: %d дней %d месяцев %d лет %d час %d минут\n", comp_day, comp_month, comp_year, comp_hour, comp_minute);
+    printf("Это: %d минут\n", comp_day * 1440 + comp_month * 44640 + comp_year * 535680 + comp_hour * 60 + comp_minute);
     printf("Или %d часов\n", comp_day * 24 + comp_month * 744 + comp_year * 8760 + comp_hour + comp_minute / 60);
     printf("Или %d дней\n", comp_day + comp_month * 31 + comp_year * 365 + comp_hour / 24 + comp_minute / 1440);
     printf("Или %d месяцев\n", comp_day / 31 + comp_month + comp_year * 12 + comp_hour / (24 * 31) + comp_minute / (1440 * 31));
     printf("Или %d лет\n", comp_day / 365 + comp_month / 12 + comp_year + comp_hour / (24 * 365) + comp_minute / (1440 * 365));
-    return 0;
 }
 
-int unix_datatime(Datatime *def_con){
-    printf("С начала эпохи юникс до введенной Вами даты прошло %d секунд.", def_con->minute * 60 + def_con->hour* 3600 + (def_con->day - 1) * 86400 + (def_con->month - 1) * 2678400 + (def_con->year-1970) * 32140800);
+void unix_datatime(Datatime *def_con){
+    printf("\nС начала эпохи юникс до введенной Вами даты прошло примерно %d секунд.\n \n", def_con->minute * 60 + def_con->hour* 3600 + (def_con->day - 1) * 86400 + (def_con->month - 1) * 2678400 + (def_con->year-1970) * 32140800);
+}
+
+void destroy_datatime(Datatime *p){
+    if (p){
+        free(p);
+        p = NULL;
+    }
 }
