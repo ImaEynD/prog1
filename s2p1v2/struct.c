@@ -29,7 +29,7 @@ Datatime *baseconst(){
         free(p);
         exit(EXIT_FAILURE);
     }
-    
+
     if (p->minute > 59) {
         printf("Ошибка: некорректные минуты (0-59).\n");
         free(p);
@@ -73,10 +73,10 @@ void print_datatime(Datatime *p){
 
 Datatime *increment_day(Datatime *p) {
     p->day++;
-    if (p->day == 31) { 
+    if (p->day > 31) { 
         p->day = 1;
         p->month++;
-        if (p->month == 12) {
+        if (p->month > 12) {
             p->month = 1;
             p->year++;
         }
@@ -86,10 +86,10 @@ Datatime *increment_day(Datatime *p) {
 
 Datatime *decrement_day(Datatime *p) {
     p->day--;
-    if (p->day == 1) {
+    if (p->day < 1) {
         p->day = 31;
         p->month--;
-        if (p->month == 1) {
+        if (p->month < 1) {
             p->month = 12;
             p->year--;
         }
